@@ -1,13 +1,17 @@
 package org.example.dao;
 
 
+import org.example.config.SocketConnectionHandler;
 import org.example.model.ChessPieces;
 import org.example.model.ChessState;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
+
+import static org.example.config.SocketConnectionHandler.getSessionList;
 
 @Repository
 public class ChessRepository {
@@ -70,7 +74,7 @@ public class ChessRepository {
 
 
 
-    public boolean saveAndGetState(int boardValue, int pieceValue, String gameId) {
+    public boolean saveAndGetState(int boardValue, int pieceValue, String gameId, List<WebSocketSession> sessions) {
         System.out.println("SAVE & GET STATE");
         ChessState chessState = new ChessState();
         System.out.println(boardValue);
@@ -83,6 +87,19 @@ public class ChessRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         System.out.println("********* *************from saveAndGetState***********");
         System.out.println(chessState.getGameId() + " " + chessState.getBoardValue() + "   " + chessState.getPieceValue());
+        List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+        if(!list.isEmpty()) {
+            if(list.size() % 2 == 1) {
+                chessState.setPlayer1(list.get(list.size() - 1).getId());
+            }
+         else   {
+                chessState.setPlayer1(list.get(list.size() - 2).getId());
+                chessState.setPlayer2(list.get(list.size() - 1).getId());
+            }
+        }
+        else {
+            chessState.setPlayer1("player1");
+        }
 
         try{
             transaction.begin();
@@ -135,9 +152,6 @@ public class ChessRepository {
         }
         catch (Exception e) {
             System.out.println(e);
-        }
-        finally {
-            entityManager.close();
         }
         return null;
     }
