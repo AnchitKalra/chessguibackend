@@ -17,7 +17,7 @@ import java.util.*;
 public class ChessController {
 
 
-   static Integer turn = 2;
+
 
 
 
@@ -46,14 +46,6 @@ public class ChessController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/chess/getTurn")
-    @ResponseBody
-    public ResponseEntity<Integer> getTurn() {
-
-
-            return new ResponseEntity<>(2, HttpStatus.OK);
-
-    }
 
 
 
@@ -61,23 +53,14 @@ public class ChessController {
     @ResponseBody
     public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state) {
       webSocketSessions  = SocketConnectionHandler.getWebSocketSessions();
-        try {
 
-            System.out.println("***********************************************");
-            System.out.println(webSocketSessions.get(0).getId());
-        }catch (Exception e) {
-            System.out.println(e);
-        }
 
 
         try{
-            if(webSocketSessions.size()  % 2 == 0) {
-                System.out.println("****************************************gameId********************************************");
-                System.out.println("************state***********");
-                System.out.println(state);
+            if(webSocketSessions.isEmpty() || webSocketSessions.size()  % 2 == 0) {
+
                 String str[] = state.split("null");
-                System.out.println("**************************************str[0]*********************");
-                System.out.println(str[0]);
+
 
                 Map<Integer, Integer> map = new HashMap<>();
                 Integer a = 0;
@@ -145,8 +128,7 @@ public class ChessController {
 
 
                 state = str[1].split("undefined")[0];
-                System.out.println("************************************state str[1]***************************************");
-                System.out.println(state);
+
                 state = state.substring(0, state.length() - 2);
 
                 if (state.length() > 3) {
@@ -156,7 +138,7 @@ public class ChessController {
                 }
 
 
-                System.out.println(map);
+
                 try {
                     if (SocketConnectionHandler.getSessionList() != null) {
                         gameId = SocketConnectionHandler.getSessionList().get(SocketConnectionHandler.getSessionList().size() - 1);
@@ -183,13 +165,13 @@ public class ChessController {
                 }
                 Collections.sort(list);
                 for (int i = 63; i >= 0; i--) {
-                    System.out.println(list.get(i));
+
                     for (int k = 0; k < 64; k++) {
                         if(stateList.get(k).getId().equals(list.get(i))) {
                             ChessState state1 = stateList.get(k);
                             state1.setBoardValue(j++);
                             l.add(state1);
-                            System.out.println(l.get(l.size() - 1).getPieceValue());
+
                             break;
                         }
                     }

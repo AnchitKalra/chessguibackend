@@ -75,18 +75,17 @@ public class ChessRepository {
 
 
     public boolean saveAndGetState(int boardValue, int pieceValue, String gameId, List<WebSocketSession> sessions) {
-        System.out.println("SAVE & GET STATE");
+       // System.out.println("SAVE & GET STATE");
         ChessState chessState = new ChessState();
-        System.out.println(boardValue);
+       // System.out.println(boardValue);
         chessState.setBoardValue(boardValue);
-        System.out.println(pieceValue);
+       // System.out.println(pieceValue);
         chessState.setPieceValue(pieceValue);
-        System.out.println(gameId);
+       // System.out.println(gameId);
         chessState.setGameId(gameId);
         EntityManager entityManager = emf.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
-        System.out.println("********* *************from saveAndGetState***********");
-        System.out.println(chessState.getGameId() + " " + chessState.getBoardValue() + "   " + chessState.getPieceValue());
+
         List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
         if(!list.isEmpty()) {
             if(list.size() % 2 == 1) {
@@ -108,7 +107,7 @@ public class ChessRepository {
             return true;
         }
         catch (Exception e) {
-            System.out.println("SAVE AND GET STATE EXCEPTION");
+
             System.out.println(e);
             transaction.rollback();
         }

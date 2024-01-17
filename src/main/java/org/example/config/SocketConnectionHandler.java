@@ -17,7 +17,6 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
             = Collections.synchronizedList(new ArrayList<>());
   public   static  List<String> sessionList = new ArrayList<>();
 
-    List<Integer> playerList = new ArrayList<>();
 
     @Override
     public void

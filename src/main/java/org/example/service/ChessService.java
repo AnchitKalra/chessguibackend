@@ -69,7 +69,7 @@ public  class ChessService {
     }
 
 
-    public synchronized List<ChessState> saveState(List<Integer> idList, List<Integer> pieceValueList, String gameId, List<WebSocketSession> sessions) {
+    public  List<ChessState> saveState(List<Integer> idList, List<Integer> pieceValueList, String gameId, List<WebSocketSession> sessions) {
         int i = 0;
         List<ChessState> chessStateList = new ArrayList<>();
         if(gameId.equals("")&& pieceValueList != null) {
@@ -92,17 +92,15 @@ public  class ChessService {
 
             if(!gameId.equals("")) {
                 if ((pieceValueList != null)) {
+                    if(SocketConnectionHandler.getSessionList().size() % 2 == 1) {
+                        return null;
+                    }
                 if (chessRepository.deleteState(gameId)) {
 
                         for (int pieceValue : pieceValueList) {
-                            System.out.println("FROM CHESS SERVICE " + " PIECEVALUELIST " + pieceValueList);
-                            if (chessRepository.saveAndGetState(i++, pieceValue, gameId,sessions)) {
-                                System.out.println("I");
-                                System.out.println(i);
-                                System.out.println(pieceValue);
-                                System.out.println(gameId);
-                            } else {
-                                break;
+
+                            if (!chessRepository.saveAndGetState(i++, pieceValue, gameId,sessions)) {
+                               break;
                             }
                         }
                     }
@@ -111,13 +109,13 @@ public  class ChessService {
             else {
                 gameId = player1GameId;
                 SocketConnectionHandler.getSessionList().add(gameId);
-                System.out.println("GAMEID----" + gameId);
+
             }
         }
         chessStateList = chessRepository.getChessState(gameId);
         if(chessStateList.size() == 64) {
-            if(!sessions.isEmpty() && SocketConnectionHandler.getSessionList().size() > 1) {
-             System.out.println(   SocketConnectionHandler.sessionList.size());
+            if(!sessions.isEmpty() && SocketConnectionHandler.getSessionList().size() % 2 == 0) {
+
                 if(chessStateList.get(63).getPlayer2() == null) {
 
                         for (i = 0; i <= 63; i++) {
