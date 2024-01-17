@@ -59,7 +59,7 @@ public class ChessController {
         try{
 
 
-            if(SocketConnectionHandler.getSessionList().isEmpty() && (webSocketSessions.isEmpty() || webSocketSessions.size()  % 2 == 0)) {
+            if((SocketConnectionHandler.getSessionList().isEmpty() || SocketConnectionHandler.getSessionList().size() % 2 == 0) && (webSocketSessions.isEmpty() || webSocketSessions.size()  % 2 == 0)) {
                 System.out.println("websocket here!");
 
 
