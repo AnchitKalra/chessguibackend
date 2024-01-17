@@ -57,7 +57,11 @@ public class ChessController {
 
 
         try{
-            if(webSocketSessions.isEmpty() || webSocketSessions.size()  % 2 == 0) {
+
+
+            if(SocketConnectionHandler.getSessionList().isEmpty() && (webSocketSessions.isEmpty() || webSocketSessions.size()  % 2 == 0)) {
+                System.out.println("websocket here!");
+
 
                 String str[] = state.split("null");
 
@@ -155,6 +159,7 @@ public class ChessController {
                 }
             }
             else {
+                System.out.println("else");
                 List<ChessState> stateList = chessService.saveState(null, null, "", webSocketSessions);
                 List<ChessState> l = new ArrayList<>();
                 int j = 0;
@@ -192,6 +197,8 @@ public class ChessController {
     @RequestMapping(method = RequestMethod.POST, value = "/chess/retrieveState")
     @ResponseBody
     public ResponseEntity<List<ChessState>>retreiveChessState() {
+        if(SocketConnectionHandler.getSessionList().size() % 2 == 0) {
+            System.out.println("size of gameIds" + SocketConnectionHandler.sessionList.size());
       String gameId = SocketConnectionHandler.getSessionList().get(SocketConnectionHandler.getSessionList().size() - 1);
        System.out.println("from retrieveState");
        System.out.println(gameId);
@@ -226,7 +233,7 @@ public class ChessController {
 
                 return new ResponseEntity<>(l1, HttpStatus.OK);
 
-        }
+        }}
 
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
