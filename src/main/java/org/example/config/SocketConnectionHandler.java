@@ -41,8 +41,11 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         System.out.println(session.getId()
                 + " DisConnected");
         if(sessionList.containsKey(session.getId())) {
+            System.out.println(sessionList.get(session.getId()) + "  removed");
             sessionList.remove(session.getId());
+
         }
+        sessionList.remove("player2");
 
         // Removing the connection info from the list
         webSocketSessions.remove(session);

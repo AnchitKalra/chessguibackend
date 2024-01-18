@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -91,37 +92,37 @@ public class ChessRepository {
         if(!list.isEmpty()) {
 
             if(list.size() % 2 == 1) {
-                try {
-
                     chessState.setPlayer1(list.get(list.size() - 1).getId());
-                    System.out.println("from list.size() % 2 == 1" + chessState.getPlayer1());
-
-                    if (SocketConnectionHandler.getSessionList().isEmpty() ) {
-                        SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
-                    }
-                    else if(!SocketConnectionHandler.getSessionList().containsKey(list.get(list.size() - 1).getId())) {
-                        SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
-                    }
-                }catch (Exception e) {System.out.println(e);
-                    System.out.println("from list.size % 2 from chess repo");
                 }
 
 
 
 
-            }
 
          else   {
-             SocketConnectionHandler.getSessionList().clear();
+
                 chessState.setPlayer1(list.get(list.size() - 2).getId());
-                if(!SocketConnectionHandler.getSessionList().containsKey(list.get(list.size() - 2).getId())) {
-                    SocketConnectionHandler.getSessionList().put(list.get(list.size() - 2).getId(), gameId);
-                }
+
 
                 chessState.setPlayer2(list.get(list.size() - 1).getId());
-                if(!SocketConnectionHandler.getSessionList().containsKey(list.get(list.size() - 1).getId())) {
-                    SocketConnectionHandler.getSessionList().put((list.get(list.size() - 1).getId()), gameId);
+
+                HashMap<String, String> map = SocketConnectionHandler.getSessionList();
+                for (String s : map.keySet()) {
+                    System.out.println("from chess repo keys");
+                    System.out.println(s);
                 }
+                for (String s : map.values()) {
+                    System.out.println("from chess repo values");
+                    System.out.println(s);
+                }
+
+                if(!map.containsKey(list.get(list.size() - 1).getId())) {
+                    SocketConnectionHandler.getSessionList().put(chessState.getPlayer2(), map.get("player2"));
+                    SocketConnectionHandler.getSessionList().remove("player2");
+                }
+
+
+
             }
         }
         else {
@@ -139,11 +140,7 @@ public class ChessRepository {
             System.out.println(e);
             transaction.rollback();
         }
-        finally {
-            if(boardValue == 63) {
-                entityManager.close();
-            }
-        }
+
         return false;
     }
 

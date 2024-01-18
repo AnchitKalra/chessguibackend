@@ -138,12 +138,15 @@ public class ChessController {
 
 
                 try {
-                    if (SocketConnectionHandler.getSessionList() != null) {
-                        gameId = "";
+                    if (!SocketConnectionHandler.getSessionList().isEmpty()) {
+                        List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+                        Map<String, String> map1 = SocketConnectionHandler.getSessionList();
+                        gameId = map1.get(list.get(list.size() -2).getId());
 
                     }
                 }catch (Exception e) {
                     System.out.println(e);
+                    System.out.println("exception from gameId");
                 }
 
                 List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId, webSocketSessions);
@@ -193,14 +196,9 @@ public class ChessController {
     @RequestMapping(method = RequestMethod.POST, value = "/chess/retrieveState")
     @ResponseBody
     public ResponseEntity<List<ChessState>>retreiveChessState() {
-        if(SocketConnectionHandler.getSessionList().size() % 2 == 0) {
 
-      String gameId = SocketConnectionHandler.getSessionList().get(SocketConnectionHandler.getWebSocketSessions().get(SocketConnectionHandler.getWebSocketSessions().size() - 1).getId());
-       System.out.println("from retrieveState");
-       System.out.println(gameId);
-      // int t = Integer.parseInt("" + turn.charAt(0));
 
-        List<ChessState> list = chessService.retreiveState(gameId);
+        List<ChessState> list = chessService.retreiveState("");
         List<ChessState> l = new ArrayList<>();
 
         if(list != null) {
@@ -229,7 +227,7 @@ public class ChessController {
 
                 return new ResponseEntity<>(l1, HttpStatus.OK);
 
-        }}
+        }
 
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
