@@ -87,13 +87,41 @@ public class ChessRepository {
         EntityTransaction transaction = entityManager.getTransaction();
 
         List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+
         if(!list.isEmpty()) {
+
             if(list.size() % 2 == 1) {
-                chessState.setPlayer1(list.get(list.size() - 1).getId());
+                try {
+
+                    chessState.setPlayer1(list.get(list.size() - 1).getId());
+                    System.out.println("from list.size() % 2 == 1" + chessState.getPlayer1());
+
+                    if (SocketConnectionHandler.getSessionList().isEmpty() ) {
+                        SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+                    }
+                    else if(!SocketConnectionHandler.getSessionList().containsKey(list.get(list.size() - 1).getId())) {
+                        SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+                    }
+                }catch (Exception e) {System.out.println(e);
+                    System.out.println("from list.size % 2 from chess repo");
+                }
+
+
+
+
             }
+
          else   {
+             SocketConnectionHandler.getSessionList().clear();
                 chessState.setPlayer1(list.get(list.size() - 2).getId());
+                if(!SocketConnectionHandler.getSessionList().containsKey(list.get(list.size() - 2).getId())) {
+                    SocketConnectionHandler.getSessionList().put(list.get(list.size() - 2).getId(), gameId);
+                }
+
                 chessState.setPlayer2(list.get(list.size() - 1).getId());
+                if(!SocketConnectionHandler.getSessionList().containsKey(list.get(list.size() - 1).getId())) {
+                    SocketConnectionHandler.getSessionList().put((list.get(list.size() - 1).getId()), gameId);
+                }
             }
         }
         else {

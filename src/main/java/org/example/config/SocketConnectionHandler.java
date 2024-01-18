@@ -9,13 +9,14 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class SocketConnectionHandler extends TextWebSocketHandler {
     static List<WebSocketSession> webSocketSessions
             = Collections.synchronizedList(new ArrayList<>());
-  public   static  List<String> sessionList = new ArrayList<>();
+  private  static  HashMap<String, String> sessionList = new HashMap<>();
 
 
     @Override
@@ -39,7 +40,9 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status);
         System.out.println(session.getId()
                 + " DisConnected");
-        sessionList = new ArrayList<>();
+        if(sessionList.containsKey(session.getId())) {
+            sessionList.remove(session.getId());
+        }
 
         // Removing the connection info from the list
         webSocketSessions.remove(session);
@@ -73,7 +76,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
   static   public  List<WebSocketSession> getWebSocketSessions() {
         return webSocketSessions;
     }
-    static public  List<String> getSessionList() {
+    static public  HashMap<String, String> getSessionList() {
         return sessionList;
     }
 

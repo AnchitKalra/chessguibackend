@@ -21,7 +21,8 @@ public  class ChessService {
     List<ChessState> l = new ArrayList<>();
     @Autowired
     ChessRepository chessRepository;
-   static String player1GameId = "";
+
+    static String player1GameId = "";
 
     public static String convertUploadedFileToBase64(byte bytes[])  {
         return Base64.getEncoder().encodeToString(bytes);
@@ -76,8 +77,6 @@ public  class ChessService {
             UUID uuid = UUID.randomUUID();
             gameId = uuid.toString();
             player1GameId = gameId;
-            SocketConnectionHandler.sessionList.add(gameId);
-
             for (int pieceValue : pieceValueList) {
                 if(chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
 
@@ -107,29 +106,42 @@ public  class ChessService {
                 }
             }
             else {
-                gameId = player1GameId;
-                SocketConnectionHandler.getSessionList().add(gameId);
+
+                System.out.println("gameId from else");
+
+
 
             }
         }
-        chessStateList = chessRepository.getChessState(gameId);
-        if(chessStateList.size() == 64) {
-            if(!sessions.isEmpty() && SocketConnectionHandler.getSessionList().size() % 2 == 0) {
+        if(gameId == "") {
+            gameId = player1GameId;
+            chessStateList = chessRepository.getChessState(gameId);
+            if (chessStateList.get(63).getPlayer2() == null) {
 
-                if(chessStateList.get(63).getPlayer2() == null) {
-
-                        for (i = 0; i <= 63; i++) {
-                            chessStateList.get(i).setPlayer2("player2");
-                        }
-
-
+                for (i = 0; i <= 63; i++) {
+                    chessStateList.get(i).setPlayer2("player2");
+                    if(!SocketConnectionHandler.getSessionList().containsKey("player2")) {
+                        SocketConnectionHandler.getSessionList().put("player2", gameId);
+                    }
                 }
             }
+        }
+        else {
+            chessStateList = chessRepository.getChessState(gameId);
+        }
+
+
+
+        if(chessStateList.size() == 64) {
             return chessStateList;
         }
         else {
             return null;
         }
+
+
+
+
 
     }
 

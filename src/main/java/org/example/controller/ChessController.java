@@ -64,6 +64,7 @@ public class ChessController {
 
 
                 String str[] = state.split("null");
+                System.out.println(str[0]);
 
 
                 Map<Integer, Integer> map = new HashMap<>();
@@ -112,7 +113,7 @@ public class ChessController {
                         }
                     } catch (Exception e) {
                         System.out.println(e);
-                        break;
+                        System.out.println("from str0.length");
                     }
                 }
 
@@ -128,24 +129,17 @@ public class ChessController {
                     }
                 } catch (Exception e) {
                     System.out.println(e);
+                    System.out.println("from piece value");
                 }
 
 
-                state = str[1].split("undefined")[0];
 
-                state = state.substring(0, state.length() - 2);
-
-                if (state.length() > 3) {
-                    for (int i = 0; i < state.length() - 1; i++) {
-                        gameId += state.charAt(i);
-                    }
-                }
 
 
 
                 try {
                     if (SocketConnectionHandler.getSessionList() != null) {
-                        gameId = SocketConnectionHandler.getSessionList().get(SocketConnectionHandler.getSessionList().size() - 1);
+                        gameId = "";
 
                     }
                 }catch (Exception e) {
@@ -160,6 +154,8 @@ public class ChessController {
             }
             else {
                 System.out.println("else");
+
+
                 List<ChessState> stateList = chessService.saveState(null, null, "", webSocketSessions);
                 List<ChessState> l = new ArrayList<>();
                 int j = 0;
@@ -198,8 +194,8 @@ public class ChessController {
     @ResponseBody
     public ResponseEntity<List<ChessState>>retreiveChessState() {
         if(SocketConnectionHandler.getSessionList().size() % 2 == 0) {
-            System.out.println("size of gameIds" + SocketConnectionHandler.sessionList.size());
-      String gameId = SocketConnectionHandler.getSessionList().get(SocketConnectionHandler.getSessionList().size() - 1);
+
+      String gameId = SocketConnectionHandler.getSessionList().get(SocketConnectionHandler.getWebSocketSessions().get(SocketConnectionHandler.getWebSocketSessions().size() - 1).getId());
        System.out.println("from retrieveState");
        System.out.println(gameId);
       // int t = Integer.parseInt("" + turn.charAt(0));
