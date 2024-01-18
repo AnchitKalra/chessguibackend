@@ -122,13 +122,12 @@ public  class ChessService {
         if(gameId == "") {
             HashMap<String, String> map = SocketConnectionHandler.getSessionList();
             List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
-            if(list.size() % 2 == 0) {
-                gameId = map.get(list.get(list.size() - 2).getId());
 
-            }
-            else {
                 gameId = map.get(list.get(list.size() - 1).getId());
-            }
+                System.out.println("gameId" + gameId);
+
+
+
 
 
             chessStateList = chessRepository.getChessState(gameId);
