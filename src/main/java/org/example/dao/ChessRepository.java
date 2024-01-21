@@ -89,6 +89,21 @@ public class ChessRepository {
 
         List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
 
+
+        HashMap<String, String > map = SocketConnectionHandler.getSessionList();
+        System.out.println("FROM CHESS REPO");
+        System.out.println(list.size());
+        System.out.println(map.size());
+        System.out.println("printing list then. map");
+        System.out.println(list);
+        System.out.println(map);
+        SocketConnectionHandler.getSessionList().remove("player2");
+        if(list.size() > map.size()) {
+
+            map.put(list.get(list.size() - 1).getId(), gameId);
+            SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+        }
+
         if(!list.isEmpty()) {
 
             if(list.size() % 2 == 1) {
@@ -106,20 +121,7 @@ public class ChessRepository {
 
                 chessState.setPlayer2(list.get(list.size() - 1).getId());
 
-                HashMap<String, String> map = SocketConnectionHandler.getSessionList();
-                for (String s : map.keySet()) {
-                    System.out.println("from chess repo keys");
-                    System.out.println(s);
-                }
-                for (String s : map.values()) {
-                    System.out.println("from chess repo values");
-                    System.out.println(s);
-                }
 
-                if(!map.containsKey(list.get(list.size() - 1).getId())) {
-                    SocketConnectionHandler.getSessionList().put(chessState.getPlayer2(), map.get("player2"));
-                    SocketConnectionHandler.getSessionList().remove("player2");
-                }
 
 
 

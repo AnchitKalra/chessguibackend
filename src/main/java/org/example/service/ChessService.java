@@ -18,6 +18,7 @@ import java.util.*;
 public  class ChessService {
 
 
+    private String playerGameId = "";
     List<ChessState> l = new ArrayList<>();
     @Autowired
     ChessRepository chessRepository;
@@ -73,26 +74,32 @@ public  class ChessService {
         if(gameId.equals("")&& pieceValueList != null) {
             UUID uuid = UUID.randomUUID();
             gameId = uuid.toString();
+            playerGameId = gameId;
             for (int pieceValue : pieceValueList) {
-                if(chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
-                    List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
-                    if(!list.isEmpty()) {
-                        HashMap<String, String> map = SocketConnectionHandler.getSessionList();
-                        if(!map.isEmpty()) {
-                            if(!map.containsKey(list.get(list.size() - 1).getId())) {
-                                SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
-                            }
-                        }
-                        else {
-                            SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
-                        }
-                    }
+                if (!chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
+                   break;
                 }
-                else{
-                    break;
+                List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+
+
+                HashMap<String, String > map = SocketConnectionHandler.getSessionList();
+                if(list.size() > map.size()) {
+                    SocketConnectionHandler.getSessionList().remove("player2");
+                    map.put(list.get(list.size() - 1).getId(), gameId);
+                    SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
                 }
+
             }
+
         }
+
+
+
+
+
+
+
+
         else{
 
 
@@ -103,28 +110,60 @@ public  class ChessService {
 
                         for (int pieceValue : pieceValueList) {
 
-                            if (!chessRepository.saveAndGetState(i++, pieceValue, gameId,sessions)) {
+                            if (!chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
                                 System.out.println("not saved");
                                break;
                             }
+
+                            List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+
+
+                            HashMap<String, String > map = SocketConnectionHandler.getSessionList();
+                            SocketConnectionHandler.getSessionList().remove("player2");
+                            if(list.size() > map.size()) {
+                                SocketConnectionHandler.getSessionList().remove("player2");
+                                map.put(list.get(list.size() - 1).getId(), gameId);
+                                SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+                            }
+
+
+
+
+
                         }
                     }
                 }
-            }
-            else {
-
-                System.out.println("gameId from else");
-
 
 
             }
+
         }
-        if(gameId == "") {
+        if(gameId.equals("")) {
             HashMap<String, String> map = SocketConnectionHandler.getSessionList();
             List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+            System.out.println(map.size());
+            System.out.println(list.size());
 
                 gameId = map.get(list.get(list.size() - 1).getId());
                 System.out.println("gameId" + gameId);
+                if(gameId == null) {
+                    gameId = playerGameId;
+                    SocketConnectionHandler.getSessionList().remove("player2");
+                    if(list.size() > map.size()) {
+                        SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), playerGameId);
+                    }
+
+
+                }
+                if(gameId != (null)) {
+                    SocketConnectionHandler.getSessionList().remove("player2");
+                    if (list.size() > map.size()) {
+                        SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+                    }
+
+                }
+
+
 
 
 
@@ -135,9 +174,6 @@ public  class ChessService {
 
                 for (i = 0; i < 63; i++) {
                     chessStateList.get(i).setPlayer2("player2");
-                    if(!SocketConnectionHandler.getSessionList().containsKey("player2")) {
-                        SocketConnectionHandler.getSessionList().put("player2", gameId);
-                    }
                 }
             }
         }
@@ -161,9 +197,7 @@ public  class ChessService {
     }
 
     public List<ChessState> retreiveState(String gameId)  {
-        HashMap<String, String> map = SocketConnectionHandler.getSessionList();
-        List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
-        gameId = map.get(list.get(list.size() - 2).getId());
+
         List<ChessState> l =  chessRepository.getChessState(gameId);
         return l;
     }

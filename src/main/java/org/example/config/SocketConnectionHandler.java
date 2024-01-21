@@ -2,6 +2,7 @@ package org.example.config;
 
 
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -13,8 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 
 
+@Service
 public class SocketConnectionHandler extends TextWebSocketHandler {
-    static List<WebSocketSession> webSocketSessions
+  private static List<WebSocketSession> webSocketSessions
             = Collections.synchronizedList(new ArrayList<>());
   private  static  HashMap<String, String> sessionList = new HashMap<>();
 
@@ -53,7 +55,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
 
     @Override
-    public void handleMessage(WebSocketSession session,
+    public synchronized void handleMessage(WebSocketSession session,
                               WebSocketMessage<?> message)
             throws Exception
     {
@@ -63,20 +65,52 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         // Iterate through the list and pass the message to
         // all the sessions Ignore the session in the list
         // which wants to send the message.
-        for (WebSocketSession webSocketSession :
-                webSocketSessions) {
-            if (session == webSocketSession)
-                continue;
+        String gameId = "";
+        String m = message.toString();
+        System.out.println("MESSAGE IS" + m + "   " + message + "    " + message.getPayload());
 
 
-            // sendMessage is used to send the message to
-            // the session
-            webSocketSession.sendMessage(message);
-        }
-    }
+            for (String keys : sessionList.keySet()) {
+                    if(keys.equals(session.getId())) {
+                        gameId = sessionList.get(keys);
+                        System.out.println("gameId from Socketconectionhandler");
+                        System.out.println(gameId);
+                        System.out.println("session id" + "   " + session.getId());
+                   break;
+                }
+            }
 
 
-  static   public  List<WebSocketSession> getWebSocketSessions() {
+             A:   for (String keys : sessionList.keySet()) {
+                    if(keys.equals(session.getId())) {
+                        continue;
+                    }
+
+
+
+                        String value = sessionList.get(keys);
+                    if (value.equals(gameId)) {
+                        System.out.println("gameid from socket");
+                        System.out.println(gameId);
+                        System.out.println("MESSAGE SENT");
+                        System.out.println(keys);
+                        for (WebSocketSession webSocketSession : webSocketSessions) {
+                            String s = webSocketSession.getId();
+                            if(s.equals(keys)) {
+                                webSocketSession.sendMessage(message);
+                                break A;
+                            }
+                        }
+
+                    }
+                    }
+                }
+
+
+
+
+
+   static   public  List<WebSocketSession> getWebSocketSessions() {
         return webSocketSessions;
     }
     static public  HashMap<String, String> getSessionList() {
@@ -85,3 +119,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
 
 }
+/*
+"acd37978-7125-4994-9ec7-25e46516796d"
+
+ */
