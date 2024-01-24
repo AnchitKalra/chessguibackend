@@ -95,7 +95,7 @@ public class ChessController {
 
 
 
-            if(!gameId.equals("") || webSocketSessions.isEmpty() || webSocketSessions.size() % 2 == 0) {
+            if(!gameId.equals("") || webSocketSessions.isEmpty() || (webSocketSessions.size() % 2 == 0 && (SocketConnectionHandler.getSessionList().isEmpty() || SocketConnectionHandler.getSessionList().size() % 2 == 0))){
                 System.out.println("websocket here!");
                 System.out.println(state);
 
@@ -219,7 +219,7 @@ public class ChessController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/chess/retrieveState")
     @ResponseBody
-    public ResponseEntity<List<ChessState>>retreiveChessState(@RequestBody(required = true) String s) {
+    public ResponseEntity<List<ChessState>>retreiveChessState(@RequestBody(required = false) String s) {
 
         String gameId = "";
         System.out.println(s);

@@ -2,6 +2,10 @@ package org.example.config;
 
 
 
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketMessage;
@@ -32,6 +36,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         System.out.println(session.getId() + " Connected");
 
         // Adding the session into the list
+
         webSocketSessions.add(session);
     }
 
@@ -55,7 +60,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
 
     @Override
-    public synchronized void handleMessage(WebSocketSession session,
+    public  void handleMessage(WebSocketSession session,
                               WebSocketMessage<?> message)
             throws Exception
     {
@@ -66,8 +71,6 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         // all the sessions Ignore the session in the list
         // which wants to send the message.
         String gameId = "";
-        String m = message.toString();
-        System.out.println("MESSAGE IS" + m + "   " + message + "    " + message.getPayload());
 
 
             for (String keys : sessionList.keySet()) {

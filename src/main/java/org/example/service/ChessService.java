@@ -197,9 +197,42 @@ public  class ChessService {
     }
 
     public List<ChessState> retreiveState(String gameId)  {
+        try {
 
-        List<ChessState> l =  chessRepository.getChessState(gameId);
-        return l;
+            List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
+            Map<String, String> map = SocketConnectionHandler.getSessionList();
+            String g = map.get("player2");
+            map.remove("player2");
+            System.out.println(gameId);
+            if (g == null) {
+                if(gameId == null || gameId == "" ) {
+                    gameId = playerGameId;
+                }
+            }
+            if (list.size() > map.size()) {
+                System.out.println("LIST > MAP");
+                map.put(list.get(list.size() - 1).getId(), gameId);
+                System.out.println(map);
+                SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+                SocketConnectionHandler.getSessionList().remove("player2");
+
+
+            }
+            if(gameId == null) {
+                return null;
+            }
+
+            List<ChessState> l = chessRepository.getChessState(gameId);
+            for (int i = 0; i < 64; i++) {
+                if(l.get(i).getPlayer2() == null) {
+                    l.get(i).setPlayer2("player2");
+                }
+            }
+            return l;
+        }catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
 
