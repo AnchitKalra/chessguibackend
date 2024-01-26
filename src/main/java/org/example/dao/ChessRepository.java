@@ -174,7 +174,7 @@ public class ChessRepository {
         try{
             TypedQuery<ChessState> typedQuery = entityManager.createQuery("select cs from ChessState cs where cs.gameId = :gameId", ChessState.class);
             typedQuery.setParameter("gameId", gameId);
-            return typedQuery.getResultList();
+            return (typedQuery.getResultList());
         }
         catch (Exception e) {
             System.out.println(e);
@@ -201,6 +201,20 @@ public class ChessRepository {
             entityManager.close();
         }
         return false;
+    }
+
+
+    public List<ChessState> getState(String gameId) {
+        EntityManager entityManager = emf.createEntityManager();
+        try{
+            TypedQuery<ChessState> typedQuery = entityManager.createQuery("select cs from ChessState cs where cs.gameId = :gameId", ChessState.class);
+            typedQuery.setParameter("gameId", gameId);
+            return typedQuery.getResultList();
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
 

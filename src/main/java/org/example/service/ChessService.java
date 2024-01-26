@@ -27,7 +27,7 @@ public  class ChessService {
     }
     public boolean saveChessPieces() {
         try {
-            int i = 0;
+            int i;
             List<String> names = new ArrayList<>();
             names.add("blackBishop");
             names.add("whiteBishop");
@@ -70,7 +70,7 @@ public  class ChessService {
 
     public  List<ChessState> saveState(List<Integer> idList, List<Integer> pieceValueList, String gameId, List<WebSocketSession> sessions) {
         int i = 0;
-        List<ChessState> chessStateList = new ArrayList<>();
+        List<ChessState> chessStateList;
         if(gameId.equals("")&& pieceValueList != null) {
             UUID uuid = UUID.randomUUID();
             gameId = uuid.toString();
@@ -105,8 +105,7 @@ public  class ChessService {
 
             if(!gameId.equals("")) {
                 if ((pieceValueList != null)) {
-                if (chessRepository.deleteState(gameId)) {
-                    System.out.println("delete");
+
 
                         for (int pieceValue : pieceValueList) {
 
@@ -137,7 +136,7 @@ public  class ChessService {
 
             }
 
-        }
+
         if(gameId.equals("")) {
             HashMap<String, String> map = SocketConnectionHandler.getSessionList();
             List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
@@ -170,6 +169,20 @@ public  class ChessService {
 
 
             chessStateList = chessRepository.getChessState(gameId);
+                List<List<ChessState>> l = new ArrayList<>();
+                List<ChessState> l1 = new ArrayList<>();
+                for (int j = 1; j <= chessStateList.size(); j++) {
+                    if(j % 64 == 0) {
+                        l1.add(chessStateList.get(j - 1));
+                        l.add(l1);
+                        l1 = new ArrayList<>();
+                    }
+                    else {
+                        l1.add(chessStateList.get(j - 1));
+                    }
+
+                }
+                chessStateList = l.get(l.size() - 1);
             if (chessStateList.get(63).getPlayer2() == null) {
 
                 for (i = 0; i < 63; i++) {
@@ -179,8 +192,28 @@ public  class ChessService {
         }
         else {
             chessStateList = chessRepository.getChessState(gameId);
-        }
+            try {
 
+                List<List<ChessState>> l = new ArrayList<>();
+                List<ChessState> l1 = new ArrayList<>();
+                for (int j = 1; j <= chessStateList.size(); j++) {
+
+                    if (j % 64 == 0) {
+                        l1.add(chessStateList.get(j - 1));
+                        l.add(l1);
+                        l1 = new ArrayList<>();
+                    } else {
+                        l1.add(chessStateList.get(j - 1));
+
+                    }
+
+                }
+                chessStateList = l.get(l.size() - 1);
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
 
 
         if(chessStateList.size() == 64) {
@@ -205,7 +238,7 @@ public  class ChessService {
             map.remove("player2");
             System.out.println(gameId);
             if (g == null) {
-                if(gameId == null || gameId == "" ) {
+                if(gameId == null || gameId.equals("")) {
                     gameId = playerGameId;
                 }
             }
@@ -222,18 +255,87 @@ public  class ChessService {
                 return null;
             }
 
-            List<ChessState> l = chessRepository.getChessState(gameId);
+            List<ChessState> chessStateList = chessRepository.getChessState(gameId);
+            List<List<ChessState>> l = new ArrayList<>();
+            List<ChessState> l1 = new ArrayList<>();
+            for (int j = 1; j <= chessStateList.size(); j++) {
+                if(j % 64 == 0) {
+                    l1.add(chessStateList.get(j - 1));
+                    l.add(l1);
+                    l1 = new ArrayList<>();
+                }
+                else {
+                    l1.add(chessStateList.get(j - 1));
+                }
+
+            }
+            chessStateList = l.get(l.size() - 1);
             for (int i = 0; i < 64; i++) {
-                if(l.get(i).getPlayer2() == null) {
-                    l.get(i).setPlayer2("player2");
+                if(chessStateList.get(i).getPlayer2() == null) {
+                    chessStateList.get(i).setPlayer2("player2");
                 }
             }
-            return l;
+            return chessStateList;
         }catch (Exception e) {
             System.out.println(e);
         }
         return null;
     }
+
+
+    public List<ChessState> getState(String gameId, int index, int turn) {
+        try{
+        List<ChessState> list = chessRepository.getState(gameId);
+        List<List<ChessState>> l = new ArrayList<>();
+        List<ChessState> l2 = new ArrayList<>();
+        for (int i = 1; i <= list.size(); i++) {
+
+            if(i % 64 == 0) {
+                l2.add(list.get(i - 1));
+                l.add(l2);
+              //  System.out.println(l);
+                l2 = new ArrayList<>();
+            }
+            else {
+                l2.add(list.get(i - 1));
+               // System.out.println(l2);
+            }
+        }
+
+             list = l.get(l.size() + index - 1);
+
+
+                    List<ChessState> l1 = new ArrayList<>();
+                    int x = 0;
+                    List<Integer> list1 = new ArrayList<>();
+                    for (int j = 0; j < 64; j++) {
+                        list1.add(list.get(j).getId());
+                        // System.out.println(list);
+                    }
+                    Collections.sort(list1);
+                    for(int j = 63; j >= 0; j--) {
+                        for (int k = 0; k < 64; k++) {
+                            if (list1.get(j).equals(list.get(k).getId())) {
+                                ChessState state = list.get(k);
+                                state.setBoardValue(x++);
+                                l1.add(state);
+                                break;
+                            }
+                        }
+
+                    }
+
+                    return l1;
+
+
+
+        }catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+
+    }
+
 
 
 

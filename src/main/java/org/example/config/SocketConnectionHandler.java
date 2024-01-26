@@ -2,10 +2,6 @@ package org.example.config;
 
 
 
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketMessage;

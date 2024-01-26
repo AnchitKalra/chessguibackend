@@ -55,7 +55,7 @@ public class ChessController {
     @ResponseBody
     public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state) {
         System.out.println(state);
-        String gameId = "";
+        StringBuilder gameId = new StringBuilder();
 
 
 
@@ -77,7 +77,7 @@ public class ChessController {
                             continue;
                         }
 
-                        gameId += str[1].charAt(j);
+                        gameId.append(str[1].charAt(j));
                         System.out.println(gameId + "   from str1" + "  " + str[1]);
 
                     }
@@ -85,7 +85,7 @@ public class ChessController {
 
                 }
                 else {
-                    gameId = "";
+                    gameId = new StringBuilder();
                     System.out.println(gameId);
                 }
             }catch (Exception e) {
@@ -95,7 +95,7 @@ public class ChessController {
 
 
 
-            if(!gameId.equals("") || webSocketSessions.isEmpty() || (webSocketSessions.size() % 2 == 0 && (SocketConnectionHandler.getSessionList().isEmpty() || SocketConnectionHandler.getSessionList().size() % 2 == 0))){
+            if(!gameId.toString().equals("") || webSocketSessions.isEmpty() || (webSocketSessions.size() % 2 == 0 && (SocketConnectionHandler.getSessionList().isEmpty() || SocketConnectionHandler.getSessionList().size() % 2 == 0))){
                 System.out.println("websocket here!");
                 System.out.println(state);
 
@@ -104,7 +104,7 @@ public class ChessController {
 
 
                 Map<Integer, Integer> map = new HashMap<>();
-                Integer a = 0;
+                int a;
                 Integer prev = -20;
                 boolean flag = false;
                 state = str[0];
@@ -173,7 +173,7 @@ public class ChessController {
 
 
 
-                List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId, webSocketSessions);
+                List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId.toString(), webSocketSessions);
                 if (stateList != null) {
 
                     return new ResponseEntity<>(stateList, HttpStatus.OK);
@@ -221,7 +221,7 @@ public class ChessController {
     @ResponseBody
     public ResponseEntity<List<ChessState>>retreiveChessState(@RequestBody(required = false) String s) {
 
-        String gameId = "";
+        StringBuilder gameId = new StringBuilder();
         System.out.println(s);
 
         try {
@@ -233,7 +233,7 @@ public class ChessController {
                         continue;
                     }
 
-                    gameId += s.charAt(j);
+                    gameId.append(s.charAt(j));
 
                 }
 
@@ -246,7 +246,7 @@ public class ChessController {
 
 
 
-        List<ChessState> list = chessService.retreiveState(gameId);
+        List<ChessState> list = chessService.retreiveState(gameId.toString());
         List<ChessState> l = new ArrayList<>();
 
         if(list != null) {
@@ -280,15 +280,36 @@ public class ChessController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/chess/previous")
+    @ResponseBody
+    public ResponseEntity<List<ChessState>> getPreviousState(@RequestBody(required = true) String s[]) {
+        try {
+            String gameId = s[0];
+            System.out.println(s[0]);
+            int index = Integer.parseInt(s[1]);
+            int turn = 0;
+            try {
+                turn = Integer.parseInt(s[2]);
+            }catch (Exception e) {
+                System.out.println(e);
+            }
+
+            List<ChessState> l = chessService.getState(gameId, index, turn);
+            return new ResponseEntity<>(l, HttpStatus.OK);
+        }catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 
 
 
 
-//    @RequestMapping(method = RequestMethod.GET, value = "/chess/getState")
-//    @ResponseBody
-//    public ResponseEntity<List<Integer>> getPieceState() {
-//
-//    }
+
+
+
+
 }
