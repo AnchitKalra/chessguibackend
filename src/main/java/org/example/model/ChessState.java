@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "chessstate")
-public class ChessState {
+public class ChessState implements Comparable<ChessState>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -84,6 +84,11 @@ public class ChessState {
 
     public void setPlayer2(String player2) {
         this.player2 = player2;
+    }
+
+    @Override
+    public int compareTo(ChessState o) {
+        return (this.id - o.id);
     }
 }
 

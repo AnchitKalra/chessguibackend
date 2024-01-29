@@ -175,7 +175,7 @@ public class ChessController {
 
                 List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId.toString(), webSocketSessions);
                 if (stateList != null) {
-
+                   Collections.sort(stateList);
                     return new ResponseEntity<>(stateList, HttpStatus.OK);
                 }
             }
@@ -184,30 +184,13 @@ public class ChessController {
 
 
                 List<ChessState> stateList = chessService.saveState(null, null, "", webSocketSessions);
-                List<ChessState> l = new ArrayList<>();
-                int j = 0;
-                List<Integer> list = new ArrayList<>();
-                for (int i = 0; i < 64; i++) {
-                    list.add(stateList.get(i).getId());
-                   // System.out.println(list);
+
+                if(!stateList.isEmpty()) {
+                   Collections.sort(stateList);
+
+
+                    return new ResponseEntity<>(stateList, HttpStatus.OK);
                 }
-                Collections.sort(list);
-                for (int i = 63; i >= 0; i--) {
-
-                    for (int k = 0; k < 64; k++) {
-                        if(stateList.get(k).getId().equals(list.get(i))) {
-                            ChessState state1 = stateList.get(k);
-                            state1.setBoardValue(j++);
-                            l.add(state1);
-
-                            break;
-                        }
-                    }
-                }
-
-
-
-                return new ResponseEntity<>(l, HttpStatus.OK);
             }
 
         }catch (Exception e) {
@@ -215,6 +198,9 @@ public class ChessController {
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/chess/retrieveState")
@@ -247,35 +233,13 @@ public class ChessController {
 
 
         List<ChessState> list = chessService.retreiveState(gameId.toString());
-        List<ChessState> l = new ArrayList<>();
 
-        if(list != null) {
-
-
-
-                List<ChessState> l1 = new ArrayList<>();
-                int j = 0;
-                List<Integer> list1 = new ArrayList<>();
-                for (int i = 0; i < 64; i++) {
-                    list1.add(list.get(i).getId());
-                    // System.out.println(list);
-                }
-                Collections.sort(list1);
-                for(int i = 63; i >= 0; i--) {
-                    for (int k = 0; k < 64; k++) {
-                        if (list1.get(i).equals(list.get(k).getId())) {
-                            ChessState state = list.get(k);
-                            state.setBoardValue(j++);
-                            l1.add(state);
-                            break;
-                        }
-                    }
+                if(!list.isEmpty()) {
+                    Collections.sort(list);
+                    return new ResponseEntity<>(list, HttpStatus.OK);
                 }
 
 
-                return new ResponseEntity<>(l1, HttpStatus.OK);
-
-        }
 
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -295,6 +259,7 @@ public class ChessController {
             }
 
             List<ChessState> l = chessService.getState(gameId, index, turn);
+            Collections.sort(l);
             return new ResponseEntity<>(l, HttpStatus.OK);
         }catch (Exception e) {
             System.out.println(e);
