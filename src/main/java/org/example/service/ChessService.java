@@ -19,6 +19,7 @@ public  class ChessService {
 
 
     private String playerGameId = "";
+
     List<ChessState> l = new ArrayList<>();
     @Autowired
     ChessRepository chessRepository;
@@ -68,8 +69,9 @@ public  class ChessService {
     }
 
 
-    public  List<ChessState> saveState(List<Integer> idList, List<Integer> pieceValueList, String gameId, List<WebSocketSession> sessions) {
+    public  List<ChessState> saveState(List<Integer> idList, List<Integer> pieceValueList, String gameId, List<WebSocketSession> sessions, int turn) {
         int i = 0;
+
         List<ChessState> chessStateList;
         if(gameId.equals("")&& pieceValueList != null) {
             UUID uuid = UUID.randomUUID();
@@ -105,7 +107,15 @@ public  class ChessService {
 
             }
             chessStateList = l.get(l.size() - 1);
-            return chessStateList;
+            if(turn == 1) {
+                Collections.sort(chessStateList);
+
+                return chessStateList;
+            }
+            else {
+                Collections.sort(chessStateList);
+                return chessStateList;
+            }
 
 
         }
@@ -166,8 +176,35 @@ public  class ChessService {
                 if (list.size() > map.size()) {
                     SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
                 }
+                chessStateList = chessRepository.getChessState(gameId);
+                List<List<ChessState>> l = new ArrayList<>();
+                List<ChessState> l1 = new ArrayList<>();
+                for (int j = 1; j <= chessStateList.size(); j++) {
+                    if(j % 64 == 0) {
+                        l1.add(chessStateList.get(j - 1));
+                        l.add(l1);
+                        l1 = new ArrayList<>();
+                    }
+                    else {
+                        l1.add(chessStateList.get(j - 1));
+                    }
 
-            }
+                }
+                chessStateList = l.get(l.size() - 1);
+                if (chessStateList.get(63).getPlayer2() == null) {
+
+                    for (i = 0; i < 64; i++) {
+                        System.out.println("player2");
+                        chessStateList.get(i).setPlayer2("player2");
+                    }
+                }
+                if(chessStateList.size() == 64) {
+                 Collections.sort(chessStateList, Collections.reverseOrder());
+                        return chessStateList;
+                    }
+                }
+
+
 
             chessStateList = chessRepository.getChessState(gameId);
             List<List<ChessState>> l = new ArrayList<>();
@@ -194,12 +231,21 @@ public  class ChessService {
 
 
             if(chessStateList.size() == 64) {
-                return chessStateList;
-            }
+                if(turn == 1) {
+                    Collections.sort(chessStateList);
+
+                    return chessStateList;
+                }
+                else {
+                    Collections.sort(chessStateList);
+
+                    return chessStateList;
+                }
+            }}
 
 
 
-        }
+
 
 
 
@@ -219,7 +265,7 @@ public  class ChessService {
 
 
 
-    public List<ChessState> retreiveState(String gameId)  {
+    public List<ChessState> retreiveState(String gameId, int turn)  {
         try {
 
             List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
@@ -265,7 +311,14 @@ public  class ChessService {
                     chessStateList.get(i).setPlayer2("player2");
                 }
             }
-            return chessStateList;
+            if(turn == 1) {
+                Collections.sort(chessStateList, Collections.reverseOrder());
+                return chessStateList;
+            }
+            else {
+                Collections.sort(chessStateList,Collections.reverseOrder());
+                return chessStateList;
+            }
         }catch (Exception e) {
             System.out.println(e);
         }

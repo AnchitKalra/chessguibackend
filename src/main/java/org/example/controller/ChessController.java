@@ -53,9 +53,20 @@ public class ChessController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/chess/getState")
     @ResponseBody
-    public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state) {
-        System.out.println(state);
-        StringBuilder gameId = new StringBuilder();
+    public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state[]) {
+       for(int i = 0; i < state.length - 1; i++) {
+           System.out.println(state[i]);
+       }
+        String gameId = "";
+        try{
+            if(state.length == 66) {
+                gameId = state[65];
+            }
+        }
+        catch (Exception e) {
+            System.out.println("from gameid");
+            System.out.println(e);
+        }
 
 
 
@@ -67,126 +78,38 @@ public class ChessController {
         try{
             webSocketSessions = SocketConnectionHandler.getWebSocketSessions();
 
-            String str[] = state.split("null");
-            try {
-
-                if (str[1].length() > 4) {
-                    for (int j = 0; j < str[1].length() - 2;j++) {
-
-                        if (str[1].charAt(j) == '[' || str[1].charAt(j) == ']' || str[1].charAt(j) == ',' || str[1].charAt(j) == '=') {
-                            continue;
-                        }
-
-                        gameId.append(str[1].charAt(j));
-                        System.out.println(gameId + "   from str1" + "  " + str[1]);
-
-                    }
-
-
-                }
-                else {
-                    gameId = new StringBuilder();
-                    System.out.println(gameId);
-                }
-            }catch (Exception e) {
-                System.out.println(e);
-                System.out.println("exception from gameId");
-            }
-
-
-
-            if(!gameId.toString().equals("") || webSocketSessions.isEmpty() || (webSocketSessions.size() % 2 == 0 && (SocketConnectionHandler.getSessionList().isEmpty() || SocketConnectionHandler.getSessionList().size() % 2 == 0))){
-                System.out.println("websocket here!");
-                System.out.println(state);
-
-
-                System.out.println(str[0]);
-
-
-                Map<Integer, Integer> map = new HashMap<>();
-                int a;
-                Integer prev = -20;
-                boolean flag = false;
-                state = str[0];
-                for (int i = 0; i < str[0].length() - 1; i++) {
-                    try {
-                        // System.out.println(state.charAt(i));
-
-                        if (state.charAt(i) == '[' || state.charAt(i) == ']' || state.charAt(i) == ',' || (state.charAt(i) >= 'a' && state.charAt(i) <= 'z')) {
-                            continue;
-                        } else {
-                            char b = state.charAt(i);
-                            if (b == '-') {
-                                flag = true;
-                                continue;
-                            }
-
-                            a = Integer.parseInt("" + b);
-
-                            int j = i + 1;
-                            while (state.charAt(j) >= '0' && state.charAt(j) <= '9') {
-                                a *= 10;
-                                b = state.charAt(j++);
-                                a += Integer.parseInt("" + b);
-
-                                i = j;
-
-                            }
-                            if (flag) {
-                                a = -a;
-                                flag = false;
-                            }
-
-                            if (!prev.equals(-20)) {
-                                map.put(prev, a);
-                                prev = -20;
-                            } else {
-                                prev = a;
-                            }
-
-
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e);
-                        System.out.println("from str0.length");
-                    }
-                }
+            if(!gameId.equals("") || webSocketSessions.isEmpty() || (webSocketSessions.size() % 2 == 0 && (SocketConnectionHandler.getSessionList().isEmpty() || SocketConnectionHandler.getSessionList().size() % 2 == 0))) {
 
                 List<Integer> idList = new ArrayList<>();
                 List<Integer> pieceValueList = new ArrayList<>();
-                try {
-
-                    for (int i = 0; i < 64; i++) {
-                        idList.add(i);
-                        if (map.get(i) != null) {
-                            pieceValueList.add(map.get(i));
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println(e);
-                    System.out.println("from piece value");
+                for (int i = 0; i < 64; i++) {
+                    idList.add(i);
+                    Integer a = Integer.parseInt(state[i]);
+                    pieceValueList.add(a);
                 }
+                System.out.println(idList);
+                System.out.println(pieceValueList);
+                int turn = Integer.parseInt(state[64]);
+                System.out.println("turn from saveState" + " " + turn);
 
 
-
-
-
-
-
-                List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId.toString(), webSocketSessions);
+                List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId, webSocketSessions, turn);
                 if (stateList != null) {
-                   Collections.sort(stateList);
                     return new ResponseEntity<>(stateList, HttpStatus.OK);
                 }
             }
+
+
+
             else {
                 System.out.println("else");
+                int turn = 2;
 
 
-                List<ChessState> stateList = chessService.saveState(null, null, "", webSocketSessions);
+                List<ChessState> stateList = chessService.saveState(null, null, "", webSocketSessions, turn);
 
                 if(!stateList.isEmpty()) {
-                   Collections.sort(stateList);
+
 
 
                     return new ResponseEntity<>(stateList, HttpStatus.OK);
@@ -194,6 +117,7 @@ public class ChessController {
             }
 
         }catch (Exception e) {
+            System.out.println("from IF");
             System.out.println(e);
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -205,24 +129,17 @@ public class ChessController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/chess/retrieveState")
     @ResponseBody
-    public ResponseEntity<List<ChessState>>retreiveChessState(@RequestBody(required = false) String s) {
+    public ResponseEntity<List<ChessState>>retreiveChessState(@RequestBody(required = false) String s[]) {
 
-        StringBuilder gameId = new StringBuilder();
+        String gameId = "";
         System.out.println(s);
+        int turn = 1;
 
         try {
-
-
-                for (int j = 0; j < s.length() - 1;j++) {
-
-                    if (s.charAt(j) == '[' || s.charAt(j) == ']' || s.charAt(j) == ',' || s.charAt(j) == '=') {
-                        continue;
-                    }
-
-                    gameId.append(s.charAt(j));
-
-                }
-
+            gameId = s[0];
+            turn = Integer.parseInt(s[1]);
+            System.out.println("gameId:" + gameId);
+            System.out.println("turn" + turn);
 
 
         }catch (Exception e) {
@@ -232,10 +149,9 @@ public class ChessController {
 
 
 
-        List<ChessState> list = chessService.retreiveState(gameId.toString());
+        List<ChessState> list = chessService.retreiveState(gameId, turn);
 
                 if(!list.isEmpty()) {
-                    Collections.sort(list);
                     return new ResponseEntity<>(list, HttpStatus.OK);
                 }
 
