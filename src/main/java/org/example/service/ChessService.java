@@ -107,15 +107,13 @@ public  class ChessService {
 
             }
             chessStateList = l.get(l.size() - 1);
-            if(turn == 1) {
+
                 Collections.sort(chessStateList);
 
                 return chessStateList;
-            }
-            else {
-                Collections.sort(chessStateList);
-                return chessStateList;
-            }
+
+
+
 
 
         }
@@ -231,16 +229,10 @@ public  class ChessService {
 
 
             if(chessStateList.size() == 64) {
-                if(turn == 1) {
                     Collections.sort(chessStateList);
 
                     return chessStateList;
-                }
-                else {
-                    Collections.sort(chessStateList);
 
-                    return chessStateList;
-                }
             }}
 
 
@@ -311,14 +303,9 @@ public  class ChessService {
                     chessStateList.get(i).setPlayer2("player2");
                 }
             }
-            if(turn == 1) {
                 Collections.sort(chessStateList, Collections.reverseOrder());
                 return chessStateList;
-            }
-            else {
-                Collections.sort(chessStateList,Collections.reverseOrder());
-                return chessStateList;
-            }
+
         }catch (Exception e) {
             System.out.println(e);
         }

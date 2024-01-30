@@ -117,7 +117,7 @@ public class ChessController {
             }
 
         }catch (Exception e) {
-            System.out.println("from IF");
+
             System.out.println(e);
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
