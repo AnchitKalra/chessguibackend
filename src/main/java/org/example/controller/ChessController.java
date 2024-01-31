@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.WebSocketSession;
+
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 
 @Controller
@@ -167,15 +169,23 @@ public class ChessController {
             String gameId = s[0];
             System.out.println(s[0]);
             int index = Integer.parseInt(s[1]);
+            int player = 0;
             int turn = 0;
             try {
-                turn = Integer.parseInt(s[2]);
+                player = Integer.parseInt(s[2]);
+                turn = Integer.parseInt(s[3]);
+
             }catch (Exception e) {
                 System.out.println(e);
             }
 
             List<ChessState> l = chessService.getState(gameId, index, turn);
-            Collections.sort(l);
+            if(index >= 0 && turn == player) {
+                Collections.sort(l, Collections.reverseOrder());
+            }
+            else {
+                Collections.sort(l);
+            }
             return new ResponseEntity<>(l, HttpStatus.OK);
         }catch (Exception e) {
             System.out.println(e);
