@@ -79,6 +79,7 @@ public  class ChessService {
             playerGameId = gameId;
             for (int pieceValue : pieceValueList) {
                 if (!chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
+                    System.out.println("save state not saved");
                    break;
                 }
                 List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
@@ -133,6 +134,7 @@ public  class ChessService {
 
 
                     for (int pieceValue : pieceValueList) {
+
 
                         if (!chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
                             System.out.println("not saved");

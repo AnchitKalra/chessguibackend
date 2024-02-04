@@ -97,37 +97,51 @@ public class ChessRepository {
         System.out.println("printing list then. map");
         System.out.println(list);
         System.out.println(map);
-        SocketConnectionHandler.getSessionList().remove("player2");
+
         if(list.size() > map.size()) {
 
             map.put(list.get(list.size() - 1).getId(), gameId);
             SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
+            System.out.println(map);
         }
 
         if(!list.isEmpty()) {
+            if(list.size() % 2 == 0) {
 
-            if(list.size() % 2 == 1) {
-                    chessState.setPlayer1(list.get(list.size() - 1).getId());
+                    for (WebSocketSession session : list) {
+                        String s = session.getId();
+                        if(map.get(s).equals(gameId)) {
+                            chessState.setPlayer1(s);
+                            break;
+                        }
+
                 }
-
-
-
-
-
-         else   {
-
-                chessState.setPlayer1(list.get(list.size() - 2).getId());
-
-
-                chessState.setPlayer2(list.get(list.size() - 1).getId());
-
-
-
-
-
+                for (WebSocketSession session : list) {
+                    String s = session.getId();
+                    if(chessState.getPlayer1() != null) {
+                    if(chessState.getPlayer1().equals(s)) {
+                        continue;
+                    }
+                    if(map.get(s).equals(gameId)) {
+                        chessState.setPlayer2(s);
+                    }}
+                }
             }
-        }
-        else {
+            else {
+
+                for (WebSocketSession session : list) {
+                    String s = session.getId();
+                    if(map.get(s).equals(gameId)) {
+                        chessState.setPlayer1(s);
+                    }
+                }
+                if(chessState.getPlayer1() == null) {
+                    chessState.setPlayer1("player1");
+                }
+            }
+
+
+        }else {
             chessState.setPlayer1("player1");
         }
 
