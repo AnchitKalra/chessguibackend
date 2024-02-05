@@ -78,7 +78,8 @@ public  class ChessService {
             gameId = uuid.toString();
             playerGameId = gameId;
             for (int pieceValue : pieceValueList) {
-                if (!chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
+
+                if (!chessRepository.saveAndGetState(idList.get(i++), pieceValue, gameId, sessions)) {
                     System.out.println("save state not saved");
                    break;
                 }
@@ -131,12 +132,13 @@ public  class ChessService {
 
             if (!gameId.equals("")) {
                 if ((pieceValueList != null)) {
+                    i = 0;
 
 
                     for (int pieceValue : pieceValueList) {
 
 
-                        if (!chessRepository.saveAndGetState(i++, pieceValue, gameId, sessions)) {
+                        if (!chessRepository.saveAndGetState(idList.get(i++), pieceValue, gameId, sessions)) {
                             System.out.println("not saved");
                             break;
                         }

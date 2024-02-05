@@ -54,13 +54,12 @@ public class ChessController {
     @RequestMapping(method = RequestMethod.POST, value = "/chess/getState")
     @ResponseBody
     public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state[]) {
-       for(int i = 0; i < state.length - 1; i++) {
-           System.out.println(state[i]);
-       }
+       System.out.println(state.length);
+
         String gameId = "";
         try{
-            if(state.length == 66) {
-                gameId = state[65];
+            if(state.length == 130) {
+                gameId = state[129];
             }
         }
         catch (Exception e) {
@@ -82,14 +81,14 @@ public class ChessController {
 
                 List<Integer> idList = new ArrayList<>();
                 List<Integer> pieceValueList = new ArrayList<>();
-                for (int i = 0; i < 64; i++) {
-                    idList.add(i);
-                    Integer a = Integer.parseInt(state[i]);
+                for (int i = 0; i < 128; i+=2) {
+                    idList.add(Integer.parseInt(state[i]));
+                    Integer a = Integer.parseInt(state[i + 1]);
                     pieceValueList.add(a);
                 }
                 System.out.println(idList);
                 System.out.println(pieceValueList);
-                int turn = Integer.parseInt(state[64]);
+                int turn = Integer.parseInt(state[128]);
                 System.out.println("turn from saveState" + " " + turn);
 
 
@@ -152,6 +151,7 @@ public class ChessController {
         List<ChessState> list = chessService.retreiveState(gameId, turn);
 
                 if(!list.isEmpty()) {
+
                     return new ResponseEntity<>(list, HttpStatus.OK);
                 }
 
