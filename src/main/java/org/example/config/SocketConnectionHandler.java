@@ -123,6 +123,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
                     webSocketSessions.remove(session);
                     sessionList.remove(session.getId());
                     mapTime.remove(session);
+                    break;
 
                 }
             }
