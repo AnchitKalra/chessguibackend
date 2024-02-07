@@ -10,9 +10,6 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-
-import static org.example.config.SocketConnectionHandler.getSessionList;
 
 @Repository
 public class ChessRepository {
@@ -193,6 +190,7 @@ public class ChessRepository {
         catch (Exception e) {
             System.out.println(e);
         }
+
         return null;
     }
 
@@ -211,9 +209,7 @@ public class ChessRepository {
             System.out.println(e);
             transaction.rollback();
         }
-        finally {
-            entityManager.close();
-        }
+
         return false;
     }
 

@@ -95,6 +95,7 @@ public  class ChessService {
 
             }
             chessStateList = chessRepository.getChessState(gameId);
+            Collections.sort(chessStateList);
             List<List<ChessState>> l = new ArrayList<>();
             List<ChessState> l1 = new ArrayList<>();
             for (int j = 1; j <= chessStateList.size(); j++) {
@@ -179,6 +180,7 @@ public  class ChessService {
                     SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
                 }
                 chessStateList = chessRepository.getChessState(gameId);
+                Collections.sort(chessStateList);
                 List<List<ChessState>> l = new ArrayList<>();
                 List<ChessState> l1 = new ArrayList<>();
                 for (int j = 1; j <= chessStateList.size(); j++) {
@@ -209,6 +211,7 @@ public  class ChessService {
 
 
             chessStateList = chessRepository.getChessState(gameId);
+            Collections.sort(chessStateList);
             List<List<ChessState>> l = new ArrayList<>();
             List<ChessState> l1 = new ArrayList<>();
             for (int j = 1; j <= chessStateList.size(); j++) {
@@ -288,6 +291,7 @@ public  class ChessService {
             }
 
             List<ChessState> chessStateList = chessRepository.getChessState(gameId);
+            Collections.sort(chessStateList);
             List<List<ChessState>> l = new ArrayList<>();
             List<ChessState> l1 = new ArrayList<>();
             for (int j = 1; j <= chessStateList.size(); j++) {
@@ -325,6 +329,7 @@ public  class ChessService {
 
 
         List<ChessState> list = chessRepository.getState(gameId);
+        Collections.sort(list);
 
 
 
