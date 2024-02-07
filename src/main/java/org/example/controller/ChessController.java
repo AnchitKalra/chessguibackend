@@ -54,7 +54,7 @@ public class ChessController {
     @RequestMapping(method = RequestMethod.POST, value = "/chess/getState")
     @ResponseBody
     public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state[]) {
-       System.out.println(state.length);
+
 
         String gameId = "";
         try{
@@ -86,10 +86,9 @@ public class ChessController {
                     Integer a = Integer.parseInt(state[i + 1]);
                     pieceValueList.add(a);
                 }
-                System.out.println(idList);
-                System.out.println(pieceValueList);
+
                 int turn = Integer.parseInt(state[128]);
-                System.out.println("turn from saveState" + " " + turn);
+
 
 
                 List<ChessState> stateList = chessService.saveState(idList, pieceValueList, gameId, webSocketSessions, turn);
@@ -101,7 +100,7 @@ public class ChessController {
 
 
             else {
-                System.out.println("else");
+
                 int turn = 2;
 
 
@@ -137,13 +136,11 @@ public class ChessController {
         try {
             gameId = s[0];
             turn = Integer.parseInt(s[1]);
-            System.out.println("gameId:" + gameId);
-            System.out.println("turn" + turn);
+
 
 
         }catch (Exception e) {
             System.out.println(e);
-            System.out.println("exception from gameId retreiveState");
         }
 
 
@@ -190,6 +187,11 @@ public class ChessController {
         }
 
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/chess/close")
+    public void closeConnection() {
+        SocketConnectionHandler.removeIdleSessions();
     }
 
 

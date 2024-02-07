@@ -26,6 +26,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
             webSocketHandlerRegistry
                     .addHandler(new SocketConnectionHandler(),"/hello")
                     .setAllowedOrigins("*");
+
         }
     }
 

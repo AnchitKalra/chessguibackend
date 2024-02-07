@@ -88,18 +88,13 @@ public class ChessRepository {
 
 
         HashMap<String, String > map = SocketConnectionHandler.getSessionList();
-        System.out.println("FROM CHESS REPO");
-        System.out.println(list.size());
-        System.out.println(map.size());
-        System.out.println("printing list then. map");
-        System.out.println(list);
-        System.out.println(map);
+
 
         if(list.size() > map.size()) {
 
             map.put(list.get(list.size() - 1).getId(), gameId);
             SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
-            System.out.println(map);
+
         }
 
         if(!list.isEmpty()) {
@@ -228,9 +223,5 @@ public class ChessRepository {
     }
 
 
-//    public List<Integer> getState() {
-//        EntityManager entityManager = emf.createEntityManager();
-//        try{
-//        }
-//    }
+
 }

@@ -2,6 +2,8 @@ package org.example.config;
 
 
 
+import org.hibernate.dialect.SybaseAnywhereDialect;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketMessage;
@@ -21,6 +23,9 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
   private  static  HashMap<String, String> sessionList = new HashMap<>();
 
 
+  private static HashMap<WebSocketSession, Long> mapTime = new HashMap<>();
+
+
     @Override
     public void
     afterConnectionEstablished(WebSocketSession session)
@@ -34,6 +39,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         // Adding the session into the list
 
         webSocketSessions.add(session);
+        mapTime.put(session, System.currentTimeMillis());
     }
 
     @Override
@@ -72,9 +78,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
             for (String keys : sessionList.keySet()) {
                     if(keys.equals(session.getId())) {
                         gameId = sessionList.get(keys);
-                        System.out.println("gameId from Socketconectionhandler");
-                        System.out.println(gameId);
-                        System.out.println("session id" + "   " + session.getId());
+
                    break;
                 }
             }
@@ -82,6 +86,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
              A:   for (String keys : sessionList.keySet()) {
                     if(keys.equals(session.getId())) {
+                        mapTime.put(session, System.currentTimeMillis());
                         continue;
                     }
 
@@ -89,14 +94,15 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
                         String value = sessionList.get(keys);
                     if (value.equals(gameId)) {
-                        System.out.println("gameid from socket");
-                        System.out.println(gameId);
+
                         System.out.println("MESSAGE SENT");
-                        System.out.println(keys);
+
                         for (WebSocketSession webSocketSession : webSocketSessions) {
                             String s = webSocketSession.getId();
                             if(s.equals(keys)) {
                                 webSocketSession.sendMessage(message);
+                                mapTime.put(webSocketSession, System.currentTimeMillis());
+
                                 break A;
                             }
                         }
@@ -106,6 +112,22 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
                 }
 
 
+
+    @Scheduled(fixedRate = 10000)
+    public static void removeIdleSessions() {
+        try {
+            for (WebSocketSession session : webSocketSessions) {
+                Long time = mapTime.get(session);
+
+                if (Math.abs(System.currentTimeMillis() - time) > 120000) {
+                    System.out.println("session closed" + session.getId());
+                    session.close();
+                }
+            }
+        }catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 
 
 
@@ -118,7 +140,3 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
 
 }
-/*
-"acd37978-7125-4994-9ec7-25e46516796d"
-
- */

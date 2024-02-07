@@ -80,7 +80,7 @@ public  class ChessService {
             for (int pieceValue : pieceValueList) {
 
                 if (!chessRepository.saveAndGetState(idList.get(i++), pieceValue, gameId, sessions)) {
-                    System.out.println("save state not saved");
+
                    break;
                 }
                 List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
@@ -140,7 +140,7 @@ public  class ChessService {
 
 
                         if (!chessRepository.saveAndGetState(idList.get(i++), pieceValue, gameId, sessions)) {
-                            System.out.println("not saved");
+
                             break;
                         }
 
@@ -161,11 +161,10 @@ public  class ChessService {
             } else if (gameId.equals("")) {
                 HashMap<String, String> map = SocketConnectionHandler.getSessionList();
                 List<WebSocketSession> list = SocketConnectionHandler.getWebSocketSessions();
-                System.out.println(map.size());
-                System.out.println(list.size());
+
 
                 gameId = map.get(list.get(list.size() - 1).getId());
-                System.out.println("gameId" + gameId);
+
                 if (gameId == null) {
                     gameId = playerGameId;
                     SocketConnectionHandler.getSessionList().remove("player2");
@@ -198,7 +197,7 @@ public  class ChessService {
                 if (chessStateList.get(63).getPlayer2() == null) {
 
                     for (i = 0; i < 64; i++) {
-                        System.out.println("player2");
+
                         chessStateList.get(i).setPlayer2("player2");
                     }
                 }
@@ -229,7 +228,7 @@ public  class ChessService {
             if (chessStateList.get(63).getPlayer2() == null) {
 
                 for (i = 0; i < 64; i++) {
-                    System.out.println("player2");
+
                     chessStateList.get(i).setPlayer2("player2");
                 }
             }
@@ -271,16 +270,15 @@ public  class ChessService {
             Map<String, String> map = SocketConnectionHandler.getSessionList();
             String g = map.get("player2");
             map.remove("player2");
-            System.out.println(gameId);
+
             if (g == null) {
                 if(gameId == null || gameId.equals("")) {
                     gameId = playerGameId;
                 }
             }
             if (list.size() > map.size()) {
-                System.out.println("LIST > MAP");
+
                 map.put(list.get(list.size() - 1).getId(), gameId);
-                System.out.println(map);
                 SocketConnectionHandler.getSessionList().put(list.get(list.size() - 1).getId(), gameId);
                 SocketConnectionHandler.getSessionList().remove("player2");
 
