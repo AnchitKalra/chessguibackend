@@ -116,13 +116,21 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     @Scheduled(fixedRate = 10000)
     public static void removeIdleSessions() {
         try {
+            WebSocketSession s = null;
             for (WebSocketSession session : webSocketSessions) {
                 Long time = mapTime.get(session);
 
                 if (Math.abs(System.currentTimeMillis() - time) > 120000) {
                     System.out.println("session closed" + session.getId());
-                    session.close();
+                    s = session;
+                    break;
+
                 }
+            }
+            if(s != null) {
+                webSocketSessions.remove(s);
+                sessionList.remove(s.getId());
+                mapTime.remove(s);
             }
         }catch (Exception e) {
             System.out.println(e);
