@@ -2,7 +2,6 @@ package org.example.config;
 
 
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketMessage;
@@ -112,25 +111,24 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
 
 
-    @Scheduled(fixedRate = 10000)
+
     public static void removeIdleSessions() {
         try {
-            WebSocketSession s = null;
+
             for (WebSocketSession session : webSocketSessions) {
                 Long time = mapTime.get(session);
 
                 if (Math.abs(System.currentTimeMillis() - time) > 120000) {
                     System.out.println("session closed" + session.getId());
-                    s = session;
-                    break;
+                    webSocketSessions.remove(session);
+                    sessionList.remove(session.getId());
+                    mapTime.remove(session);
 
                 }
             }
-            if(s != null) {
-                webSocketSessions.remove(s);
-                sessionList.remove(s.getId());
-                mapTime.remove(s);
-            }
+
+
+
         }catch (Exception e) {
             System.out.println(e);
         }
