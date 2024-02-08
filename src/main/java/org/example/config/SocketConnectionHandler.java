@@ -75,11 +75,13 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
                 if(i % 2 == 0) {
                     WebSocketSession socketSession = webSocketSessions.get(i + 1);
                     socketSession.sendMessage(message);
+                    mapTime.put(socketSession, System.currentTimeMillis());
                     break;
                 }
                 else {
                     WebSocketSession socketSession = webSocketSessions.get(i - 1);
                     socketSession.sendMessage(message);
+                    mapTime.put(socketSession, System.currentTimeMillis());
                     break;
                 }
             }
