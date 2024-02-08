@@ -70,43 +70,22 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         // Iterate through the list and pass the message to
         // all the sessions Ignore the session in the list
         // which wants to send the message.
-        String gameId = "";
-
-
-            for (String keys : sessionList.keySet()) {
-                    if(keys.equals(session.getId())) {
-                        gameId = sessionList.get(keys);
-
-                   break;
+        for(int i = 0; i < webSocketSessions.size(); i++) {
+            if(session.equals(webSocketSessions.get(i))) {
+                if(i % 2 == 0) {
+                    WebSocketSession socketSession = webSocketSessions.get(i + 1);
+                    socketSession.sendMessage(message);
+                    break;
+                }
+                else {
+                    WebSocketSession socketSession = webSocketSessions.get(i - 1);
+                    socketSession.sendMessage(message);
+                    break;
                 }
             }
+        }
+        System.out.println("Message sent");
 
-
-             A:   for (String keys : sessionList.keySet()) {
-                    if(keys.equals(session.getId())) {
-                        mapTime.put(session, System.currentTimeMillis());
-                        continue;
-                    }
-
-
-
-                        String value = sessionList.get(keys);
-                    if (value.equals(gameId)) {
-
-                        System.out.println("MESSAGE SENT");
-
-                        for (WebSocketSession webSocketSession : webSocketSessions) {
-                            String s = webSocketSession.getId();
-                            if(s.equals(keys)) {
-                                webSocketSession.sendMessage(message);
-                                mapTime.put(webSocketSession, System.currentTimeMillis());
-
-                                break A;
-                            }
-                        }
-
-                    }
-                    }
                 }
 
 
@@ -118,7 +97,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
             for (WebSocketSession session : webSocketSessions) {
                 Long time = mapTime.get(session);
 
-                if (Math.abs(System.currentTimeMillis() - time) > 120000) {
+                if (Math.abs(System.currentTimeMillis() - time) > 300000) {
                     System.out.println("session closed" + session.getId());
                     webSocketSessions.remove(session);
                     sessionList.remove(session.getId());

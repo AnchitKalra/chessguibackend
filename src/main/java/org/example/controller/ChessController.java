@@ -54,6 +54,7 @@ public class ChessController {
     @RequestMapping(method = RequestMethod.POST, value = "/chess/getState")
     @ResponseBody
     public ResponseEntity<List<ChessState>> saveChessState(@RequestBody(required = true) String state[]) {
+        System.out.println("from saveChessState");
 
 
         String gameId = "";
@@ -128,9 +129,11 @@ public class ChessController {
     @RequestMapping(method = RequestMethod.POST, value = "/chess/retrieveState")
     @ResponseBody
     public ResponseEntity<List<ChessState>>retreiveChessState(@RequestBody(required = false) String s[]) {
+        System.out.println("from retrieveState");
 
         String gameId = "";
-        System.out.println(s);
+        System.out.println(s[0]);
+        System.out.println(s[1]);
         int turn = 1;
 
         try {
