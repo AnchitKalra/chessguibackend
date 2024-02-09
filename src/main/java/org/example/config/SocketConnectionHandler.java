@@ -72,6 +72,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         // which wants to send the message.
         for(int i = 0; i < webSocketSessions.size(); i++) {
             if(session.equals(webSocketSessions.get(i))) {
+                mapTime.put(session, System.currentTimeMillis());
                 if(i % 2 == 0) {
                     WebSocketSession socketSession = webSocketSessions.get(i + 1);
                     socketSession.sendMessage(message);
@@ -84,6 +85,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
                     mapTime.put(socketSession, System.currentTimeMillis());
                     break;
                 }
+
             }
         }
         System.out.println("Message sent");
