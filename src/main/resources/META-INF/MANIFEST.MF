@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Main-Class: 
+Main-Class: org.example.App
 Class-Path: logback-core-1.2.3.jar commons-codec-1.11.jar spring-data-co
  mmons-2.0.10.RELEASE.jar javax.transaction-api-1.2.jar spring-boot-auto
  configure-2.0.5.RELEASE.jar jackson-core-2.9.6.jar hibernate-commons-an
