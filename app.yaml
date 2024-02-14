@@ -3,7 +3,5 @@ runtime: java1.8
 
 service: CheesGuiBackend
 
-handlers:
-  - url: /.*
-    script: target/CheesGuiBackend-1.0-SNAPSHOT.jar
+script: target/CheesGuiBackend-1.0-SNAPSHOT.jar
 
