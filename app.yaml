@@ -1,4 +1,2 @@
 service: CheesGuiBackend
 
-script: target/CheesGuiBackend-1.0-SNAPSHOT.jar
-
