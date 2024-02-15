@@ -29,33 +29,41 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     afterConnectionEstablished(WebSocketSession session)
             throws Exception
     {
+        try {
 
-        super.afterConnectionEstablished(session);
-        // Logging the connection ID with Connected Message
-        System.out.println(session.getId() + " Connected");
+            super.afterConnectionEstablished(session);
+            // Logging the connection ID with Connected Message
+            System.out.println(session.getId() + " Connected");
 
-        // Adding the session into the list
+            // Adding the session into the list
 
-        webSocketSessions.add(session);
-        mapTime.put(session, System.currentTimeMillis());
+            webSocketSessions.add(session);
+            mapTime.put(session, System.currentTimeMillis());
+        }catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session,
                                       CloseStatus status)throws Exception
     {
-        super.afterConnectionClosed(session, status);
-        System.out.println(session.getId()
-                + " DisConnected");
-        if(sessionList.containsKey(session.getId())) {
-            System.out.println(sessionList.get(session.getId()) + "  removed");
-            sessionList.remove(session.getId());
+        try {
+            super.afterConnectionClosed(session, status);
+            System.out.println(session.getId()
+                    + " DisConnected");
+            if (sessionList.containsKey(session.getId())) {
+                System.out.println(sessionList.get(session.getId()) + "  removed");
+                sessionList.remove(session.getId());
 
+            }
+            sessionList.remove("player2");
+
+            // Removing the connection info from the list
+            webSocketSessions.remove(session);
+        }catch (Exception e) {
+            System.out.println(e);
         }
-        sessionList.remove("player2");
-
-        // Removing the connection info from the list
-        webSocketSessions.remove(session);
     }
 
 
@@ -64,31 +72,33 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
                               WebSocketMessage<?> message)
             throws Exception
     {
+        try {
+            super.handleMessage(session, message);
 
-        super.handleMessage(session, message);
+            // Iterate through the list and pass the message to
+            // all the sessions Ignore the session in the list
+            // which wants to send the message.
+            for (int i = 0; i < webSocketSessions.size(); i++) {
+                if (session.equals(webSocketSessions.get(i))) {
+                    mapTime.put(session, System.currentTimeMillis());
+                    if (i % 2 == 0) {
+                        WebSocketSession socketSession = webSocketSessions.get(i + 1);
+                        socketSession.sendMessage(message);
+                        mapTime.put(socketSession, System.currentTimeMillis());
+                        break;
+                    } else {
+                        WebSocketSession socketSession = webSocketSessions.get(i - 1);
+                        socketSession.sendMessage(message);
+                        mapTime.put(socketSession, System.currentTimeMillis());
+                        break;
+                    }
 
-        // Iterate through the list and pass the message to
-        // all the sessions Ignore the session in the list
-        // which wants to send the message.
-        for(int i = 0; i < webSocketSessions.size(); i++) {
-            if(session.equals(webSocketSessions.get(i))) {
-                mapTime.put(session, System.currentTimeMillis());
-                if(i % 2 == 0) {
-                    WebSocketSession socketSession = webSocketSessions.get(i + 1);
-                    socketSession.sendMessage(message);
-                    mapTime.put(socketSession, System.currentTimeMillis());
-                    break;
                 }
-                else {
-                    WebSocketSession socketSession = webSocketSessions.get(i - 1);
-                    socketSession.sendMessage(message);
-                    mapTime.put(socketSession, System.currentTimeMillis());
-                    break;
-                }
-
             }
+            System.out.println("Message sent");
+        }catch (Exception e) {
+            System.out.println(e);
         }
-        System.out.println("Message sent");
 
                 }
 
