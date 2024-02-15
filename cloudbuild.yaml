@@ -1,0 +1,10 @@
+env: flex
+
+service: CheesGuiBackend
+
+handlers:
+  - url: /.*
+    script: target/CheesGuiBackend-1.0-SNAPSHOT.jar
+
+env_variables:
+  SPRING_PROFILES_ACTIVE: dev
