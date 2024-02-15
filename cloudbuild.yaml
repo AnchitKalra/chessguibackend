@@ -1,2 +1,1 @@
 name: google/cloud-sdk
-args: ['gcloud', 'run', 'deploy','https://console.cloud.google.com/cloud-build/builds;region=global/98cf5db0-b5cf-454f-b39d-223fb4f0bec6;step=0?project=chess-412709']
