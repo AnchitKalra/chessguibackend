@@ -1,10 +1,2 @@
-env: flex
-
-service: CheesGuiBackend
-
-handlers:
-  - url: /.*
-    script: target/CheesGuiBackend-1.0-SNAPSHOT.jar
-
-env_variables:
-  SPRING_PROFILES_ACTIVE: dev
+name: google/cloud-sdk
+args: ['gcloud', 'run', 'deploy','https://console.cloud.google.com/cloud-build/builds;region=global/98cf5db0-b5cf-454f-b39d-223fb4f0bec6;step=0?project=chess-412709']
