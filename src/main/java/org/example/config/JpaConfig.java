@@ -18,7 +18,7 @@ public class JpaConfig {
         emfb.setPersistenceXmlLocation("classpath:META-INF/persistence.xml");
         emfb.afterPropertiesSet();
 
-        return (EntityManagerFactory) emfb.getObject();
+        return  emfb.getObject();
     }
 
     @Bean
