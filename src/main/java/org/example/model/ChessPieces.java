@@ -1,7 +1,7 @@
 package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 
 import java.util.List;
