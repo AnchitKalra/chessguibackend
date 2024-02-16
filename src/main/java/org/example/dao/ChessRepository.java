@@ -1,13 +1,13 @@
 package org.example.dao;
 
 
+import jakarta.persistence.*;
 import org.example.config.SocketConnectionHandler;
 import org.example.model.ChessPieces;
 import org.example.model.ChessState;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.WebSocketSession;
 
-import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 

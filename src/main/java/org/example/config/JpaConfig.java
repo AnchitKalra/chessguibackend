@@ -6,7 +6,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
@@ -18,7 +18,7 @@ public class JpaConfig {
         emfb.setPersistenceXmlLocation("classpath:META-INF/persistence.xml");
         emfb.afterPropertiesSet();
 
-        return  emfb.getObject();
+        return emfb.getObject();
     }
 
     @Bean

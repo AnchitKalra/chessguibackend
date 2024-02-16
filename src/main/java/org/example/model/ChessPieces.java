@@ -1,9 +1,9 @@
 package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.context.annotation.EnableMBeanExport;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+
 import java.util.List;
 
 @Entity
