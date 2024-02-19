@@ -1,10 +1,7 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
-
-import java.util.List;
 
 @Entity
 @Table(name = "chesspieces")
@@ -17,7 +14,6 @@ public class ChessPieces {
 
 
     @Column(name = "image",columnDefinition = "text")
-    @JsonProperty("image")
     private String image;
 
 

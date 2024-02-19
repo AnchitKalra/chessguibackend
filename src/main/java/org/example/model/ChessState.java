@@ -1,11 +1,8 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.persistence.*;
 
+import jakarta.persistence.*;
 
-import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name = "chessstate")
