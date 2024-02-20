@@ -24,7 +24,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build a release artifact.
-RUN mvn package -DskipTests
+RUN mvn install -DskipTests
 
 # Use Eclipse Temurin for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
