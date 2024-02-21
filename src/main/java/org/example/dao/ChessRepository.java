@@ -1,7 +1,7 @@
 package org.example.dao;
 
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import org.example.config.SocketConnectionHandler;
 import org.example.model.ChessPieces;
 import org.example.model.ChessState;
