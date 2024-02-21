@@ -1,40 +1,24 @@
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# [START cloudrun_helloworld_dockerfile]
-# [START run_helloworld_dockerfile]
-# Use the official maven image to create a build artifact.
+# Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3-eclipse-temurin-17-alpine as builder
+FROM maven:3-jdk-11-slim AS build-env
 
-# Copy local code to the container image.
+# Set the working directory to /app
 WORKDIR /app
-COPY pom.xml .
+# Copy the pom.xml file to download dependencies
+COPY pom.xml ./
+# Copy local code to the container image.
 COPY src ./src
 
-# Build a release artifact.
-RUN mvn clean install -DskipTests
+# Download dependencies and build a release artifact.
+RUN mvn package -DskipTests
 
-# Use Eclipse Temurin for base image.
+# Use OpenJDK for base image.
+# https://hub.docker.com/_/openjdk
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM eclipse-temurin:17.0.9_9-jre-alpine
+FROM openjdk:11.0.16-jre-slim
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/ChessGuiBackend-*.jar /ChessGuiBackend-1.0-SNAPSHOT.jar
+COPY --from=build-env /app/target/hello-world-*.jar /hello-world.jar
 
 # Run the web service on container startup.
-CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/ChessGuiBackend-1.0-SNAPSHOT.jar"]
-
-# [END run_helloworld_dockerfile]
-# [END cloudrun_helloworld_dockerfile]
+CMD ["java", "-jar", "/hello-world.jar"]

@@ -1,7 +1,7 @@
 package org.example.model;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 
 @Entity

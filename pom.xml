@@ -6,10 +6,16 @@
   <artifactId>ChessGuiBackend</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.14</version>
+  </parent>
+  <properties>
+    <java.version>11</java.version>
+     </properties>
   <name>ChessGuiBackend</name>
-  <url>http://maven.apache.org</url>
-  <dependencyManagement>
+   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>com.google.cloud</groupId>
@@ -25,23 +31,35 @@
 
   <dependencies>
   <!-- Hibernate core dependency -->
+
+  <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-gcp-starter-logging -->
+<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-gcp-starter -->
 <dependency>
-  <groupId>org.hibernate.orm</groupId>
-  <artifactId>hibernate-core</artifactId>
-  <version>6.3.1.Final</version>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-gcp-starter</artifactId>
+    <version>1.1.0.RELEASE</version>
 </dependency>
+
+   
+      
+    <dependency>
+ <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.6.10.Final</version>
+      <type>pom</type>
+    </dependency>
 
 <!-- Postgresql JDBC driver dependency -->
 <dependency>
-  <groupId>org.postgresql</groupId>
-  <artifactId>postgresql</artifactId>
-  <version>42.7.1</version>
-</dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.6.0</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
 
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
-      <version>3.2.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
     <dependency>
@@ -54,7 +72,6 @@
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-websocket</artifactId>
-    <version>3.1.1</version>
 </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
@@ -73,7 +90,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>3.2.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 
@@ -83,7 +99,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>3.1.1</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
     <dependency>
@@ -127,8 +142,16 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>17</source>
-          <target>17</target>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
+       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <mainClass>org.example.App</mainClass>
         </configuration>
       </plugin>
 
