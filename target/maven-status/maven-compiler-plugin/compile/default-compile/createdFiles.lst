@@ -1,8 +1,7 @@
 org/example/controller/ChessController.class
 org/example/service/ChessService.class
 org/example/config/SocketConnectionHandler.class
-org/example/App$HelloWorldController.class
-org/example/App.class
+org/example/HelloWorldApplication.class
 org/example/config/WebSocketConfig.class
 org/example/model/ChessState.class
 org/example/dao/ChessRepository.class

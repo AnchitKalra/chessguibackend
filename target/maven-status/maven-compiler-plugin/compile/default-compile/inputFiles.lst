@@ -2,8 +2,8 @@
 /home/ak007kalra/chessguibackend/src/main/java/org/example/controller/ChessController.java
 /home/ak007kalra/chessguibackend/src/main/java/org/example/config/SocketConnectionHandler.java
 /home/ak007kalra/chessguibackend/src/main/java/org/example/config/JpaConfig.java
-/home/ak007kalra/chessguibackend/src/main/java/org/example/App.java
 /home/ak007kalra/chessguibackend/src/main/java/org/example/model/ChessPieces.java
 /home/ak007kalra/chessguibackend/src/main/java/org/example/model/ChessState.java
+/home/ak007kalra/chessguibackend/src/main/java/org/example/HelloWorldApplication.java
 /home/ak007kalra/chessguibackend/src/main/java/org/example/service/ChessService.java
 /home/ak007kalra/chessguibackend/src/main/java/org/example/config/WebSocketConfig.java

@@ -1,1 +1,4 @@
-runtime: java17
+runtime: java11
+instance_class: App
+
+#

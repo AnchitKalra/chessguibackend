@@ -27,6 +27,10 @@ public class ChessController {
     static List<SocketConnectionHandler> socketConnectionHandlerList = new ArrayList<>();
 
      List<WebSocketSession> webSocketSessions = new ArrayList<>();
+     @RequestMapping("/")
+     public String hello() {
+       return "index";
+       }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/chess/save")
